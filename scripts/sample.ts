@@ -1,5 +1,5 @@
 import { writeFileSync } from "node:fs";
-import { normalizeText, renderDiffHtml } from "../src/diff-html";
+import { normalizeText, renderDiffHtml } from "../src/diff-html.ts";
 
 const unchanged = Array.from({ length: 20 }, (_, i) => `Unchanged filler line number ${i + 1}.`).join("\n");
 

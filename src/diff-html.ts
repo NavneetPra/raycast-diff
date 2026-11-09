@@ -264,12 +264,31 @@ export function renderDiffHtml(original: string, changed: string): string {
   <div class="stats"><span class="stat-del">−${removedCount}</span> <span class="stat-ins">+${addedCount}</span></div>
   <div class="controls">
     <div class="segmented">
-      <button data-set="granularity" data-value="line">Line</button>
-      <button data-set="granularity" data-value="word">Word</button>
+      <button data-set="granularity" data-value="line" title="Line diff" aria-label="Line diff">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" stroke-linecap="round" />
+        </svg>
+      </button>
+      <button data-set="granularity" data-value="word" title="Word diff" aria-label="Word diff">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2.5 4.5h4M8.5 4.5h5M2.5 8h5M9.5 8h4M2.5 11.5h3.5M8 11.5h5.5" stroke-linecap="round" />
+        </svg>
+      </button>
     </div>
+    <div class="divider"></div>
     <div class="segmented">
-      <button data-set="layout" data-value="inline">One screen</button>
-      <button data-set="layout" data-value="split">Side by side</button>
+      <button data-set="layout" data-value="inline" title="Unified view" aria-label="Unified view">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2.5" y="2.5" width="11" height="11" rx="2" />
+          <path d="M5.5 6h5M5.5 10h5" stroke-linecap="round" />
+        </svg>
+      </button>
+      <button data-set="layout" data-value="split" title="Split view" aria-label="Split view">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2.5" y="2.5" width="11" height="11" rx="2" />
+          <path d="M8 2.5v11" />
+        </svg>
+      </button>
     </div>
   </div>
 </header>
@@ -296,16 +315,18 @@ sync();
 
 const STYLES = `
 :root {
-  --bg: #fff; --fg: #222; --muted: #888; --border: #e2e2e2; --subtle: #f7f7f7; --stripe: #eeeeee;
-  --active-bg: #222; --active-fg: #fff;
+  --bg: #fff; --fg: #222; --muted: #737373; --border: #e5e5e5; --subtle: rgba(0, 0, 0, 0.04); --stripe: #eeeeee;
+  --header-bg: rgba(255, 255, 255, 0.82);
+  --active-bg: rgba(0, 0, 0, 0.07); --active-fg: #111;
   --del-line: #fdecec; --del-word: #f6b8b8; --del-fg: #c62828;
   --ins-line: #e9f7ec; --ins-word: #a8e0b4; --ins-fg: #2e7d32;
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #141414; --fg: #e6e6e6; --muted: #777; --border: #2c2c2c; --subtle: #1c1c1c; --stripe: #222;
-    --active-bg: #e6e6e6; --active-fg: #141414;
+    --bg: #141414; --fg: #e6e6e6; --muted: #888; --border: #262626; --subtle: rgba(255, 255, 255, 0.05); --stripe: #222;
+    --header-bg: rgba(20, 20, 20, 0.82);
+    --active-bg: rgba(255, 255, 255, 0.1); --active-fg: #ffffff;
     --del-line: rgba(229, 83, 75, 0.14); --del-word: rgba(229, 83, 75, 0.42); --del-fg: #f07167;
     --ins-line: rgba(74, 180, 96, 0.14); --ins-word: rgba(74, 180, 96, 0.42); --ins-fg: #6cc57c;
   }
@@ -316,20 +337,47 @@ body {
   font: 13px/20px "SF Mono", SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
 }
 header {
-  position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 20px; background: var(--bg); border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px; background: var(--header-bg); border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
 }
-.stats { font-weight: 600; }
-.stat-del { color: var(--del-fg); }
-.stat-ins { color: var(--ins-fg); margin-left: 6px; }
-.controls { display: flex; gap: 8px; }
-.segmented { display: inline-flex; border: 1px solid var(--border); }
+.stats {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 600;
+}
+.stat-del, .stat-ins {
+  display: inline-flex; align-items: center;
+  padding: 2px 7px; border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+  line-height: 16px;
+}
+.stat-del { color: var(--del-fg); background: var(--del-line); }
+.stat-ins { color: var(--ins-fg); background: var(--ins-line); }
+.controls { display: flex; align-items: center; gap: 6px; }
+.divider { width: 1px; height: 14px; background: var(--border); margin: 0 2px; }
+.icon {
+  width: 14px; height: 14px; display: block; opacity: 0.75;
+  transition: opacity 0.12s ease;
+}
+.segmented {
+  display: inline-flex; align-items: center; gap: 2px;
+}
 .segmented button {
-  font: inherit; font-size: 12px; padding: 2px 10px; border: 0; background: transparent; color: var(--fg); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; padding: 0; border: 0; border-radius: 5px;
+  background: transparent; color: var(--muted); cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease;
+  user-select: none;
 }
+.segmented button:hover:not([aria-pressed="true"]) { background: var(--subtle); color: var(--fg); }
+.segmented button:hover:not([aria-pressed="true"]) .icon { opacity: 0.95; }
 .segmented button:focus { outline: none; }
-.segmented button + button { border-left: 1px solid var(--border); }
-.segmented button[aria-pressed="true"] { background: var(--active-bg); color: var(--active-fg); }
+.segmented button:focus-visible { outline: 2px solid var(--muted); outline-offset: 1px; }
+.segmented button[aria-pressed="true"] {
+  background: var(--active-bg); color: var(--active-fg);
+}
+.segmented button[aria-pressed="true"] .icon { opacity: 1; }
 .view { display: none; }
 body[data-granularity="line"][data-layout="inline"] #line-inline,
 body[data-granularity="line"][data-layout="split"] #line-split,
