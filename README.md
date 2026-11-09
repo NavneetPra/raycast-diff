@@ -1,0 +1,1 @@
+A better diff extension for Raycast.
