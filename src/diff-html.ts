@@ -259,7 +259,7 @@ export function renderDiffHtml(original: string, changed: string): string {
 <title>Diff (−${removedCount} +${addedCount})</title>
 <style>${STYLES}</style>
 </head>
-<body data-granularity="line" data-layout="inline">
+<body data-granularity="line" data-layout="split">
 <header>
   <div class="stats"><span class="stat-del">−${removedCount}</span> <span class="stat-ins">+${addedCount}</span></div>
   <div class="controls">

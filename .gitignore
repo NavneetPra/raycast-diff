@@ -1,5 +1,4 @@
 node_modules
 dist
-preview
 .DS_Store
 raycast-env.d.ts

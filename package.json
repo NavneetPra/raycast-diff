@@ -4,7 +4,7 @@
   "title": "Diff",
   "description": "Compare two blocks of text and view a line-level or word-level diff in your browser",
   "icon": "icon.png",
-  "author": "navneetp",
+  "author": "navneet_prakash",
   "platforms": [
     "macOS"
   ],
